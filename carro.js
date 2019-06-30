@@ -41,59 +41,59 @@ MongoClient.connect(url, (err, client) => {
   db = client.db("meteor");
 
   //Para cadastrar um carro
-  exports.cadastrar = function(req, res) {
-    db.collection("carro").insertOne(req.body, (err, result) => {
-      if (err) {
-        res.send(err);
-      }
-
-      res.send(req.body);
+  exports.cadastrar = function(carro) {
+    if (carro.placa == null) {
+      return "Placa invalida";
+    }
+    if (carro.placa.length > 8) {
+      return "Placa invalida";
+    }
+    if (isNaN(carro.ano)) {
+      return "Campo ano inválido";
+    }
+    return db.collection("carro").insertOne(carro, (err, result) => {
+      return err;
     });
   };
 
   //Para visualizar os carros
-  exports.visualizar = function(req, res) {
-    db.collection("carro")
-      .find()
-      .toArray((err, results) => {
-        if (err) {
-          res.send(err);
-        }
-        res.send(results);
-      });
+  exports.visualizar = function() {
+    return new Promise(function(resolve, reject) {
+      db.collection("carro")
+        .find()
+        .toArray((err, results) => {
+          if (err) return reject(err);
+          return resolve(results);
+        });
+    });
   };
 
   //Para buscar carro por Id
-  exports.buscarPorId = function(req, res) {
-    db.collection("carro").findOne({ _id: id }, (err, result) => {
-      if (err) {
-        res.send(err);
-      }
-
-      res.send(result);
+  exports.buscarPorId = function(id) {
+    return new Promise(function(resolve, reject) {
+      db.collection("carro").findOne({ _id: id }, (err, result) => {
+        if (err) return reject(err);
+        return resolve(result);
+      });
     });
   };
 
   //Para alterar um carro
-  exports.alterar = function(req, res) {
-    db.collection("carro").updateOne(
+  exports.alterar = function(id, carro) {
+    if (carro.placa == null) {
+      return "Placa invalida";
+    }
+    return db.collection("carro").updateOne(
       { _id: id },
       {
         $set: {
-          placa: req.body.placa,
-          chassi: req.body.chassi,
-          renavam: req.body.renavam,
-          modelo: req.body.modelo,
-          marca: req.body.marca,
-          ano: req.body.ano
+          placa: carro.placa,
+          chassi: carro.chassi,
+          renavam: carro.renavam,
+          modelo: carro.modelo,
+          marca: carro.marca,
+          ano: carro.ano
         }
-      },
-      (err, result) => {
-        if (err) {
-          res.send(err);
-        }
-
-        res.send(result);
       }
     );
   };
@@ -101,7 +101,7 @@ MongoClient.connect(url, (err, client) => {
   //Para deletar um carro
   exports.deletar = function(id) {
     return db.collection("carro").deleteOne({ _id: id }, (err, result) => {
-    return err;
+      return err;
     });
   };
 });

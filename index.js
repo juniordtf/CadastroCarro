@@ -19,24 +19,37 @@ app.get("/", (req, res) => {
 app.post("/carro", (req, res) => {
   console.log(req.body);
 
-  carro.cadastrar(req, res);
+  let err = carro.cadastrar(req.body);
+
+  if (err) {
+    res.send(err);
+  }
+
+  res.send(req.body);
 });
 
 //Para visualizar os carros
 app.get("/carro", (req, res) => {
-  carro.visualizar(req, res);
+  carro.visualizar().then(function(results) {
+    console.log(results);
+    console.log("index.js");
+    res.send(results);
+  });
 });
 
 //Para buscar carro por Id
 app.get("/carro/:id", (req, res) => {
   let id = new ObjectId(req.params.id);
-  carro.buscarPorId(req, res);
+  carro.buscarPorId(id).then(function(result) {
+    res.send(result);
+  });
 });
 
 //Para alterar um carro
 app.put("/carro/:id", (req, res) => {
   let id = new ObjectId(req.params.id);
-  carro.alterar(req, res);
+  let result = carro.alterar(id, req.body);
+  res.send(result);
 });
 
 //Para deletar um carro

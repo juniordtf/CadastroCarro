@@ -1,0 +1,2 @@
+Documentação de usoPara iniciar os serviços:1 – Instalar a pasta node_modules e o arquivo package-lock.json no projeto através do comando “npm install”;2 – Abrir um terminal na pasta do projeto e iniciar o meteor através do comando “meteor”;3 – Em um outro terminal acessar a pasta do projeto e rodar o comando “nodemon index.js”;4 – Realizar o CRUD de carro, conforme os endereços criados para a API no arquivo index.js;
+5 – Dar o comando "mocha" na raiz do projeto para realizar os testes unitários;  
